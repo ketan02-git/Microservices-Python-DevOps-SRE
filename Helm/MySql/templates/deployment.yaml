@@ -1,0 +1,82 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: mysql
+
+  template:
+    metadata:
+      labels:
+        app: mysql
+
+    spec:
+      containers:
+        - name: mysql
+
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+
+          ports:
+            - containerPort: 3306
+
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-root-secret
+                  key: MYSQL_ROOT_PASSWORD
+
+            - name: APP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-user-secret
+                  key: DB_PASSWORD
+
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
+
+            - name: mysql-init
+              mountPath: /docker-entrypoint-initdb.d/init.sh
+              subPath: init.sh
+
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - 'mysqladmin ping -h 127.0.0.1 -uroot -p"$MYSQL_ROOT_PASSWORD"'
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
+
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - 'mysqladmin ping -h 127.0.0.1 -uroot -p"$MYSQL_ROOT_PASSWORD"'
+            initialDelaySeconds: 90
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3
+
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+
+      volumes:
+        - name: mysql-storage
+          persistentVolumeClaim:
+            claimName: mysql-pvc
+
+        - name: mysql-init
+          configMap:
+            name: mysql-init
+            defaultMode: 0755

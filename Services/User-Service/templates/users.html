@@ -1,0 +1,219 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f5f9;
+            color: #1e293b;
+            padding: 35px 18px;
+        }
+
+        .container {
+            max-width: 1050px;
+            margin: auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            color: white;
+            padding: 30px;
+            border-radius: 14px;
+            margin-bottom: 25px;
+        }
+
+        header h1 {
+            margin-bottom: 8px;
+        }
+
+        .panel {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px #0000000c;
+        }
+
+        h2 {
+            margin-bottom: 18px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            margin-bottom: 12px;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+        }
+
+        .add {
+            background: #2563eb;
+        }
+
+        .update {
+            background: #0d9488;
+        }
+
+        .delete {
+            background: #dc2626;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .edit-form {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .edit-form input {
+            max-width: 180px;
+        }
+
+        @media(max-width: 650px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            body {
+                padding: 15px 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <header>
+        <h1>👥 User Management</h1>
+        <p>Manage your users with Flask and MySQL</p>
+    </header>
+
+    <section class="panel">
+        <h2>➕ Add New User</h2>
+
+        <form action="/users/create" method="POST">
+            <div class="form-grid">
+                <input name="name" placeholder="Full Name" required>
+                <input name="email" type="email" placeholder="Email Address" required>
+                <input name="role" placeholder="Role" required>
+            </div>
+
+            <button class="add" type="submit">Add User</button>
+        </form>
+    </section>
+
+    <section class="panel">
+        <h2>All Users ({{ users|length }})</h2>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.role }}</td>
+                        <td>
+                            <div class="actions">
+                                <button class="update" type="button"
+                                    onclick="document.getElementById('edit-{{ user.id }}').style.display='block'">
+                                    Edit
+                                </button>
+
+                                <form action="/users/delete/{{ user.id }}"
+                                      method="POST"
+                                      onsubmit="return confirm('Delete this user?')">
+                                    <button class="delete" type="submit">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+
+                            <form id="edit-{{ user.id }}"
+                                  class="edit-form"
+                                  action="/users/update/{{ user.id }}"
+                                  method="POST">
+
+                                <input name="name" value="{{ user.name }}" required>
+                                <input name="email" type="email" value="{{ user.email }}" required>
+                                <input name="role" value="{{ user.role }}" required>
+
+                                <button class="update" type="submit">Save</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5">No users found. Add your first user!</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</div>
+</body>
+</html>

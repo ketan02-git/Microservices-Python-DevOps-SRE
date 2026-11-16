@@ -1,0 +1,50 @@
+image:
+  repository: mysql
+  tag: "8.0"
+
+service:
+  type: ClusterIP
+  port: 3306
+
+storage:
+  size: 5Gi
+  storageClassName: ""
+
+database:
+  rootPassword: CHANGE_ME_ROOT
+  userPassword: CHANGE_ME_APP
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 512Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+resources: {}
+
+ingress:
+  enabled: false
+  annotations: {}
+  hosts: []
+  tls: []
+
+autoscaling:
+  enabled: false
+
+podLabels: {}
+podAnnotations: {}
+
+serviceAccount:
+  create: true
+  name: ""
+
+httpRoute:
+  enabled: false

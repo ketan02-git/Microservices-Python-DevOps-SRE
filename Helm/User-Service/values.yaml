@@ -1,0 +1,73 @@
+replicaCount: 2
+
+image:
+  repository: user-service
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 4000
+  targetPort: 4000
+  nodePort: 30400
+
+database:
+  host: mysql
+  port: "3306"
+  name: users_db
+  user: user_app
+
+secret:
+  name: mysql-user-secret
+  passwordKey: DB_PASSWORD
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+probes:
+  readiness:
+    initialDelaySeconds: 15
+    periodSeconds: 10
+  liveness:
+    initialDelaySeconds: 30
+    periodSeconds: 20
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 512Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+resources: {}
+
+ingress:
+  enabled: false
+  annotations: {}
+  hosts: []
+  tls: []
+
+autoscaling:
+  enabled: false
+
+podLabels: {}
+podAnnotations: {}
+
+serviceAccount:
+  create: true
+  name: ""
+
+httpRoute:
+  enabled: false

@@ -1,0 +1,22 @@
+
+CREATE DATABASE IF NOT EXISTS users_db;
+CREATE DATABASE IF NOT EXISTS products_db;
+
+USE users_db;
+
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(120) NOT NULL UNIQUE,
+    role VARCHAR(100) NOT NULL
+);
+
+USE products_db;
+
+CREATE TABLE IF NOT EXISTS products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150) NOT NULL,
+    description TEXT NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    quantity INT NOT NULL
+);
