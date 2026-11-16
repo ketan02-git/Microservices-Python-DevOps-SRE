@@ -1,8 +1,8 @@
 replicaCount: 2
 
 image:
-  repository: user-service
-  tag: latest
+  repository: cloudketan/user-service
+  tag: uv1
   pullPolicy: IfNotPresent
 
 service:
