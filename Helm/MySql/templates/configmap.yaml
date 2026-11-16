@@ -3,9 +3,12 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: mysql-init
-
 data:
-  init.sql: |
+  init.sh: |
+    #!/bin/bash
+    set -e
+
+    mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" <<EOSQL
     CREATE DATABASE IF NOT EXISTS users_db;
     CREATE DATABASE IF NOT EXISTS products_db;
 
@@ -16,3 +19,4 @@ data:
     GRANT ALL PRIVILEGES ON products_db.* TO 'product_app'@'%';
 
     FLUSH PRIVILEGES;
+    EOSQL
