@@ -37,14 +37,6 @@ probes:
     initialDelaySeconds: 30
     periodSeconds: 20
 
-resources:
-  requests:
-    cpu: 250m
-    memory: 512Mi
-  limits:
-    cpu: 1000m
-    memory: 1Gi
-
 serviceAccount:
   create: true
   automount: true
@@ -64,10 +56,6 @@ autoscaling:
 
 podLabels: {}
 podAnnotations: {}
-
-serviceAccount:
-  create: true
-  name: ""
 
 httpRoute:
   enabled: false

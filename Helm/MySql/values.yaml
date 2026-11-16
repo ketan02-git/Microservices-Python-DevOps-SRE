@@ -28,8 +28,6 @@ serviceAccount:
   annotations: {}
   name: ""
 
-resources: {}
-
 ingress:
   enabled: false
   annotations: {}
@@ -41,10 +39,6 @@ autoscaling:
 
 podLabels: {}
 podAnnotations: {}
-
-serviceAccount:
-  create: true
-  name: ""
 
 httpRoute:
   enabled: false
